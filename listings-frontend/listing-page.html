@@ -1,0 +1,106 @@
+[php]
+	$server_name = "redacted";
+	$database_name = "redacted";
+	$username = "redacted";
+	$password = "redacted";
+
+	$conn = new mysqli($server_name, $username, $password, $database_name);
+
+	if($conn->connect_error) {
+		die("Error in connecting to listings database.");
+	} else {
+
+		$id = $_GET["id"];
+		$id = $conn->real_escape_string($id);
+		$query_string = "SELECT * FROM new_listings WHERE id = ".$id;
+		$result = $conn->query($query_string);
+		$num_rows = $result->num_rows;
+		$row = $result->fetch_assoc();
+
+		$id = $row["id"];
+		$year = $row["year"];
+		$model = $row["model"];
+		$location = $row["location"];
+		$transmission = $row["transmission"];
+		$color = $row["color"];
+		$miles = $row["miles"];
+		$site = $row["site"];
+		$url = $row["url"];
+		$description = $row["description"];
+		$price = $row["price"];
+		$images = $row["images"];
+		$condition = $row["condition"];
+
+		$price_string = "Auction";
+
+		if($price != -1) {
+			$price_string = "$" . number_format($price);
+		}
+
+		$description_string = substr($description, 0, 200);
+		$miles_string = "Not specified";
+
+		if($miles != -1) {
+			$miles_string = number_format($miles) . " miles";
+		}
+	}
+
+
+
+[/php]
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".entry-title").html("[php] echo $year; [/php] Datsun 280Z for Sale in [php] echo $location; [/php]");
+	});
+</script>
+
+<span id="price-str">[php] echo $price_string; [/php]</span>
+
+<div id="left-section">
+	<ul>
+		<li><span class="lititle">Mileage: </span>[php] echo $miles_string; [/php]</li>
+		<li><span class="lititle">Color: </span>[php] echo $color; [/php]</li>
+		<li><span class="lititle">Transmission: </span>[php] echo $transmission; [/php]</li>
+		<li><span class="lititle">Located in: </span>[php] echo $location; [/php]</li>
+		<li><span class="lititle">ZCarGuide Condition Assessment: </span>[php] echo $condition; [/php]</li>
+	</ul>
+</div>
+
+[php]
+	if ($site == "ZCarGuide") {
+[/php]
+		<div id="right-section">
+			<a href="mailto:zcarguide@gmail.com" target="_blank">Email zcarguide@gmail.com for more information</a>
+		</div>
+[php]
+	} else {
+[/php]
+		<div id="right-section">
+			<a href="[php] echo $url; [/php]" target="_blank">View the full listing from [php] echo $site; [/php]</a>
+		</div>
+[php]
+	}
+[/php]
+
+<div id="within-listing-ad">
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:block; text-align:center;"
+	     data-ad-layout="in-article"
+	     data-ad-format="fluid"
+	     data-ad-client="ca-pub-5315962531624790"
+	     data-ad-slot="6356658434"></ins>
+	<script>
+	     (adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+</div>
+
+<div id="listing-description">
+	<p>
+		[php] echo nl2br($description); [/php]
+	</p>
+</div>
+
+
+[gallery link="file" columns="4" ids="[php] echo $images;[/php]"]
